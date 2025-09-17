@@ -4,3 +4,35 @@ GET {{MyAuthWebApi_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+GET {{MyAuthWebApi_HostAddress}}/api/Products/
+Accept: application/json
+
+###
+POST {{MyAuthWebApi_HostAddress}}/api/Products/
+Accept: application/json
+Content-Type: application/json
+
+{
+"name": "The History of AI",
+        "description": "A comprehensive look at the evolution of artificial intelligence.",
+        "price": 25.00,
+        "stock": 250,
+        "categoryid": 5
+}
+
+###
+GET {{MyAuthWebApi_HostAddress}}/api/Categories/
+Accept: application/json
+
+###
+POST {{MyAuthWebApi_HostAddress}}/api/Categories/
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Non-Fiction Books",
+    "description": "Biographies, history, and science books."
+}
+
+###
