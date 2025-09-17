@@ -1,6 +1,9 @@
 @MyAuthWebApi_HostAddress = http://localhost:5245
-@accessToken = CfDJ8LDVhiIx21FCnVzLb-ZX7ZjNJdZBp9ne7lN-MgQHaj9C09-aZ7RN7y9cD36KHzLTNEpN-I60btGd86RuT_MdrTKQH3TFZiNFApAXXfDliPhYaWZdYvOjVH4dErE-BTNRF-fgnD_y9VN28jXDf4oiEqZ366WGbN8mCSHhTpwNDhyO3o-ddKX1svBvA-B7M_3a90qycVq8LLDWklIHqtyDUF5Dm3m8MNJljZ7HgTFJJaBoA5TCZ7fH2y0GtnEYuBjtK7oGo0HJ2YqMou_2rLBqkVGUJ3yCTVN4h8uxAKbFYBVYnlxy5hCqHMMDMqppkZwxnfZ2tZAesxArXvu0V1Yu-qMtmy0UGBLAw0VtWYOseaJMIwFkANWB8RobzlO-PFfGFpe2Wp_o_lEPKrahmxaMv8i5nrJShSQFMEhZEL3dsoH_nFhTAgOnUD_FvT5Km6NAvsM1syY9pUckTE3vnIbdQ87H3LxQXxSPRp-Mf_cCk9_fExSldisVfeDU_pu2OQxhKQ7CQJ9de5z3_ffp3n042u5YMeFDKZtqDzYu4uhyxMclW6Qnk4ijRp5urqA6Yk_xk8KgNwQ1UgrnloTSi_ITNrnDBB5dU5dERDZNAYFfWxLv5PM57cU9FBPWQ4OpyldI6EOleMmAXO0QyE_xrsos50GYJFvvOzMFNTXqPpSESYE8
+# @accessToken = CfDJ8LDVhiIx21FCnVzLb-ZX7ZjNJdZBp9ne7lN-MgQHaj9C09-aZ7RN7y9cD36KHzLTNEpN-I60btGd86RuT_MdrTKQH3TFZiNFApAXXfDliPhYaWZdYvOjVH4dErE-BTNRF-fgnD_y9VN28jXDf4oiEqZ366WGbN8mCSHhTpwNDhyO3o-ddKX1svBvA-B7M_3a90qycVq8LLDWklIHqtyDUF5Dm3m8MNJljZ7HgTFJJaBoA5TCZ7fH2y0GtnEYuBjtK7oGo0HJ2YqMou_2rLBqkVGUJ3yCTVN4h8uxAKbFYBVYnlxy5hCqHMMDMqppkZwxnfZ2tZAesxArXvu0V1Yu-qMtmy0UGBLAw0VtWYOseaJMIwFkANWB8RobzlO-PFfGFpe2Wp_o_lEPKrahmxaMv8i5nrJShSQFMEhZEL3dsoH_nFhTAgOnUD_FvT5Km6NAvsM1syY9pUckTE3vnIbdQ87H3LxQXxSPRp-Mf_cCk9_fExSldisVfeDU_pu2OQxhKQ7CQJ9de5z3_ffp3n042u5YMeFDKZtqDzYu4uhyxMclW6Qnk4ijRp5urqA6Yk_xk8KgNwQ1UgrnloTSi_ITNrnDBB5dU5dERDZNAYFfWxLv5PM57cU9FBPWQ4OpyldI6EOleMmAXO0QyE_xrsos50GYJFvvOzMFNTXqPpSESYE8
 @refreshToken = CfDJ8LDVhiIx21FCnVzLb-ZX7ZgIdXbuURR3t2VItLKdjYfza68gB5_4WdsNuSS3axpJoqrmCVHqTWwgNT5hURSaX9OJsymO0cQAd47Nw_qPCEAxAS1bp0CcXx3WJMZDrJG2y9jaKC_MWKCQApq9sZDi11dnolTK6CnWe0W0-MeMDJ2zHe-FmNjpJAwJ2cH2kaMp9hlu-yFOah_KuQjVCnPN3WhgL1RAEulR5hJUQ25B0I9WLDooLqQYz6M9H-sH8I_iCFEGo3x9begcfy9v6mkOxDG7oIqfQIBnvl8wPTtnXvKxqpX5dpvyzFL6HPROl0cfOTKumLNgitvwuQYuI6K-Mr4bg9xee9j9Od-EzE3CTs6wVXt0_CfKt0xONq2nrPV7jv1MQ6NLW6_p3-mGQXHgZmU8N8zXF4ehdC09nguy9DermfN78clwNvDbDTiU07uuaBm7DLYOQC5pgfNubSSiVKnPyGqcLXg6yTtVXDidnET7wyMv1Vyro0JbNTKl29s2fo6YA-yWhJTvFwGPpTLoJ-3KatRFB7IxZLhWwPa_4YkpomKPn1crUVXn0kf3-rfAEnSQEJuE2jVvq_vuUPGTsDas-Nfh4XuDSeHqHXjaxL9SsdUYnl_Kpakgi3Xy0oMou4Mzrovxzof8lzumPTYangoTdWkaKwTdKAIxhJ1iWh8Axc16XVaj3pGX9qZQ2-PBGg
+
+@accessToken = {{refresh.response.body.accessToken}}
+
 GET {{MyAuthWebApi_HostAddress}}/weatherforecast/
 Accept: application/json
 Authorization: Bearer {{accessToken}}
@@ -26,6 +29,7 @@ Content-Type: application/json
 }
 
 ###
+# @name refresh
 POST {{MyAuthWebApi_HostAddress}}/refresh
 Accept: application/json
 Content-Type: application/json
@@ -75,6 +79,37 @@ Content-Type: application/json
 {
     "name": "Non-Fiction Books",
     "description": "Biographies, history, and science books."
+}
+
+###
+
+GET {{MyAuthWebApi_HostAddress}}/api/Users/
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+POST {{MyAuthWebApi_HostAddress}}/api/Users/assign-role
+Accept: application/json
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "role": "ADMIN"
+}
+###
+
+GET {{MyAuthWebApi_HostAddress}}/api/Roles/
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+POST {{MyAuthWebApi_HostAddress}}/api/Roles/
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "User"
 }
 
 ###

@@ -17,7 +17,10 @@ builder.Services.AddAuthorization();
 //     .AddEntityFrameworkStores<ApplicationDbContext>()
 //     .AddDefaultTokenProviders();
 
-builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services
+        .AddIdentityApiEndpoints<IdentityUser>()
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
