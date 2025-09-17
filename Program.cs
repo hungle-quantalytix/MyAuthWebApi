@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyAuthWebApi.Data;
 
@@ -9,6 +10,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options
     //.UseLazyLoadingProxies()
     .UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddAuthorization();
+
+// builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//     .AddEntityFrameworkStores<ApplicationDbContext>()
+//     .AddDefaultTokenProviders();
+
+builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -28,6 +37,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.MapIdentityApi<IdentityUser>();
 
 app.MapControllers();
 
