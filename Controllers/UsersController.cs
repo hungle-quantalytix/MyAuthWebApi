@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,9 +37,5 @@ namespace MyAuthWebApi.Controllers
         
     }
 
-    public class AssignRoleByNameRequest
-    {
-        public required string Email { get; set; }
-        public required string Role { get; set; }
-    }
+    public record AssignRoleByNameRequest(string Email, string Role);
 }

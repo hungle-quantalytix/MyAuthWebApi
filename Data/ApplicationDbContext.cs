@@ -13,5 +13,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole
 
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
+    public DbSet<Permission> Permissions { get; set; } = null!;
+    public DbSet<Claim> Claims { get; set; } = null!;
 
 }

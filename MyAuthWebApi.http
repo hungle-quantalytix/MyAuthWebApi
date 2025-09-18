@@ -70,11 +70,13 @@ Accept: application/json
 @categoryId = 1
 GET {{MyAuthWebApi_HostAddress}}/api/Categories/{{categoryId}}
 Accept: application/json
+Authorization: Bearer {{accessToken}}
 
 ###
 POST {{MyAuthWebApi_HostAddress}}/api/Categories/
 Accept: application/json
 Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 
 {
     "name": "Non-Fiction Books",
@@ -110,6 +112,27 @@ Content-Type: application/json
 
 {
     "name": "User"
+}
+
+###
+
+GET {{MyAuthWebApi_HostAddress}}/api/Permissions/
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+POST {{MyAuthWebApi_HostAddress}}/api/Permissions/
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "resourceType": "Product",
+    "resourceId": "*",
+    "action": "Read",
+    "subjectType": "User",
+    "subjectId": "*"
 }
 
 ###
