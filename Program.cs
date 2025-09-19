@@ -2,12 +2,13 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyAuthWebApi.Data;
+using MyAuthWebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options
+    options.EnableSensitiveDataLogging()
     //.UseLazyLoadingProxies()
     .UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -40,6 +41,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<PermissionMiddleware>();
 
 app.MapIdentityApi<IdentityUser>();
 

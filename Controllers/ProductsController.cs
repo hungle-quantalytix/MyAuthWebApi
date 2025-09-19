@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyAuthWebApi.Attributes;
 using MyAuthWebApi.Data;
 using MyAuthWebApi.Models;
 
@@ -9,26 +10,21 @@ namespace MyAuthWebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class ProductsController : ControllerBase
+public class ProductsController(ApplicationDbContext context) : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
-
-    public ProductsController(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     [HttpGet]
+    [RequirePermission("Read", nameof(Product))]
     public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
     {
-        return await _context.Products.Include(x => x.Category).ToListAsync();
+        return await context.Products.Include(x => x.Category).ToListAsync();
     }
 
     [HttpGet("{id}")]
+    [RequirePermission("Read", nameof(Product))]
     public async Task<ActionResult<Product>> GetProduct(int id)
     {
-        var product = await _context.Products
-            // .Include(p => p.Category)
+        var product = await context.Products
+            .Include(p => p.Category)
             .FirstOrDefaultAsync(p => p.Id == id);
 
         if (product == null)
@@ -40,6 +36,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [RequirePermission("Update", nameof(Product))]
     public async Task<IActionResult> PutProduct(int id, Product product)
     {
         if (id != product.Id)
@@ -52,11 +49,11 @@ public class ProductsController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        _context.Entry(product).State = EntityState.Modified;
+        context.Entry(product).State = EntityState.Modified;
 
         try
         {
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -74,6 +71,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
+    [RequirePermission("Create", nameof(Product))]
     public async Task<ActionResult<Product>> PostProduct(Product product)
     {
         if (!ModelState.IsValid)
@@ -81,29 +79,30 @@ public class ProductsController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        _context.Products.Add(product);
-        await _context.SaveChangesAsync();
+        context.Products.Add(product);
+        await context.SaveChangesAsync();
 
         return CreatedAtAction("GetProduct", new { id = product.Id }, product);
     }
 
     [HttpDelete("{id}")]
+    [RequirePermission("Delete", nameof(Product))]
     public async Task<IActionResult> DeleteProduct(int id)
     {
-        var product = await _context.Products.FindAsync(id);
+        var product = await context.Products.FindAsync(id);
         if (product == null)
         {
             return NotFound();
         }
 
-        _context.Products.Remove(product);
-        await _context.SaveChangesAsync();
+        context.Products.Remove(product);
+        await context.SaveChangesAsync();
 
         return NoContent();
     }
 
     private bool ProductExists(int id)
     {
-        return _context.Products.Any(e => e.Id == id);
+        return context.Products.Any(e => e.Id == id);
     }
 }

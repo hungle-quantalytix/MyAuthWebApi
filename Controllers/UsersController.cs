@@ -18,9 +18,16 @@ namespace MyAuthWebApi.Controllers
         }
         
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<IdentityUser>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers()
         {
-            return await _userManager.Users.ToListAsync();
+            var users = await _userManager.Users.Select(user => new UserResponse
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Roles = _userManager.GetRolesAsync(user).Result
+            }).ToListAsync();
+            
+            return users;
         }
 
         [HttpPost("assign-role")]
@@ -38,4 +45,11 @@ namespace MyAuthWebApi.Controllers
     }
 
     public record AssignRoleByNameRequest(string Email, string Role);
+    public class UserResponse
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public IEnumerable<string> Roles { get; set; } = new List<string>();
+        // public IEnumerable<string> Permissions { get; set; } = new List<string>();
+    }
 }

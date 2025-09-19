@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyAuthWebApi.Attributes;
 using MyAuthWebApi.Data;
 using MyAuthWebApi.Models;
 
@@ -9,25 +10,20 @@ namespace MyAuthWebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class CategoriesController : ControllerBase
+public class CategoriesController(ApplicationDbContext context) : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
-
-    public CategoriesController(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     [HttpGet]
+    [RequirePermission("Read", nameof(Category))]
     public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
     {
-        return await _context.Categories.Include(x => x.Products).ToListAsync();
+        return await context.Categories.Include(x => x.Products).ToListAsync();
     }
 
     [HttpGet("{id}")]
+    [RequirePermission("Read", nameof(Category))]
     public async Task<ActionResult<Category>> GetCategory(int id)
     {
-        var category = await _context.Categories
+        var category = await context.Categories
             .Include(c => c.Products)
             .FirstOrDefaultAsync(c => c.Id == id);
 
@@ -40,6 +36,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [RequirePermission("Create", nameof(Category))]
     public async Task<IActionResult> PutCategory(int id, Category category)
     {
         if (id != category.Id)
@@ -52,11 +49,11 @@ public class CategoriesController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        _context.Entry(category).State = EntityState.Modified;
+        context.Entry(category).State = EntityState.Modified;
 
         try
         {
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -74,6 +71,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPost]
+    [RequirePermission("Post", nameof(Category))]
     public async Task<ActionResult<Category>> PostCategory(Category category)
     {
         if (!ModelState.IsValid)
@@ -81,35 +79,36 @@ public class CategoriesController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        _context.Categories.Add(category);
-        await _context.SaveChangesAsync();
+        context.Categories.Add(category);
+        await context.SaveChangesAsync();
 
         return CreatedAtAction("GetCategory", new { id = category.Id }, category);
     }
 
     [HttpDelete("{id}")]
+    [RequirePermission("Delete", nameof(Category))]
     public async Task<IActionResult> DeleteCategory(int id)
     {
-        var category = await _context.Categories.FindAsync(id);
+        var category = await context.Categories.FindAsync(id);
         if (category == null)
         {
             return NotFound();
         }
 
-        var hasProducts = await _context.Products.AnyAsync(p => p.CategoryId == id);
+        var hasProducts = await context.Products.AnyAsync(p => p.CategoryId == id);
         if (hasProducts)
         {
             return BadRequest("Cannot delete category that contains products.");
         }
 
-        _context.Categories.Remove(category);
-        await _context.SaveChangesAsync();
+        context.Categories.Remove(category);
+        await context.SaveChangesAsync();
 
         return NoContent();
     }
 
     private bool CategoryExists(int id)
     {
-        return _context.Categories.Any(e => e.Id == id);
+        return context.Categories.Any(e => e.Id == id);
     }
 }
