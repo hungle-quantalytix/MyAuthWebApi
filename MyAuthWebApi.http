@@ -111,7 +111,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "name": "User"
+    "name": "Admin"
 }
 
 ###

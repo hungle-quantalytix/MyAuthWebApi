@@ -5,7 +5,7 @@ using MyAuthWebApi.Models;
 
 namespace MyAuthWebApi.Data;
 
-public class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+public class ApplicationDbContext : IdentityDbContext<QtxUser, IdentityRole, string>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -15,5 +15,5 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Permission> Permissions { get; set; } = null!;
     public DbSet<Claim> Claims { get; set; } = null!;
-
+    public DbSet<Navigation> Navigations { get; set; } = null!;
 }

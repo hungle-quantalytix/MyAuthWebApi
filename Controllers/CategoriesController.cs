@@ -13,14 +13,16 @@ namespace MyAuthWebApi.Controllers;
 public class CategoriesController(ApplicationDbContext context) : ControllerBase
 {
     [HttpGet]
-    [RequirePermission("Read", nameof(Category))]
+    //[RequirePermission("Read", nameof(Category))]
+    [RequireClaim("read", nameof(Category))]
     public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
     {
         return await context.Categories.Include(x => x.Products).ToListAsync();
     }
 
     [HttpGet("{id}")]
-    [RequirePermission("Read", nameof(Category))]
+    //[RequirePermission("Read", nameof(Category))]
+    [RequireClaim("read", nameof(Category))]
     public async Task<ActionResult<Category>> GetCategory(int id)
     {
         var category = await context.Categories
@@ -36,7 +38,8 @@ public class CategoriesController(ApplicationDbContext context) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [RequirePermission("Create", nameof(Category))]
+    //[RequirePermission("Create", nameof(Category))]
+    [RequireClaim("write", nameof(Category))]
     public async Task<IActionResult> PutCategory(int id, Category category)
     {
         if (id != category.Id)
@@ -71,7 +74,8 @@ public class CategoriesController(ApplicationDbContext context) : ControllerBase
     }
 
     [HttpPost]
-    [RequirePermission("Post", nameof(Category))]
+    //[RequirePermission("Post", nameof(Category))]
+    [RequireClaim("write", nameof(Category))]
     public async Task<ActionResult<Category>> PostCategory(Category category)
     {
         if (!ModelState.IsValid)
@@ -86,7 +90,8 @@ public class CategoriesController(ApplicationDbContext context) : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [RequirePermission("Delete", nameof(Category))]
+    //[RequirePermission("Delete", nameof(Category))]
+    [RequireClaim("write", nameof(Category))]
     public async Task<IActionResult> DeleteCategory(int id)
     {
         var category = await context.Categories.FindAsync(id);

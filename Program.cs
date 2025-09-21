@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyAuthWebApi.Data;
 using MyAuthWebApi.Middlewares;
+using MyAuthWebApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,7 @@ builder.Services.AddAuthorization();
 //     .AddDefaultTokenProviders();
 
 builder.Services
-        .AddIdentityApiEndpoints<IdentityUser>()
+        .AddIdentityApiEndpoints<QtxUser>()
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -43,8 +44,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.UseMiddleware<PermissionMiddleware>();
+app.UseMiddleware<ClaimMiddleware>();
 
-app.MapIdentityApi<IdentityUser>();
+app.MapIdentityApi<QtxUser>();
 
 app.MapControllers();
 

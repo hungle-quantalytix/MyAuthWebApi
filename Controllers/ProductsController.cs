@@ -13,14 +13,16 @@ namespace MyAuthWebApi.Controllers;
 public class ProductsController(ApplicationDbContext context) : ControllerBase
 {
     [HttpGet]
-    [RequirePermission("Read", nameof(Product))]
+    //[RequirePermission"Read", nameof(Product))]
+    [RequireClaim("read", nameof(Product))]
     public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
     {
         return await context.Products.Include(x => x.Category).ToListAsync();
     }
 
     [HttpGet("{id}")]
-    [RequirePermission("Read", nameof(Product))]
+    //[RequirePermission"Read", nameof(Product))]
+    [RequireClaim("read", nameof(Product))]
     public async Task<ActionResult<Product>> GetProduct(int id)
     {
         var product = await context.Products
@@ -36,7 +38,8 @@ public class ProductsController(ApplicationDbContext context) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [RequirePermission("Update", nameof(Product))]
+    //[RequirePermission"Update", nameof(Product))]
+    [RequireClaim("write", nameof(Product))]
     public async Task<IActionResult> PutProduct(int id, Product product)
     {
         if (id != product.Id)
@@ -71,7 +74,8 @@ public class ProductsController(ApplicationDbContext context) : ControllerBase
     }
 
     [HttpPost]
-    [RequirePermission("Create", nameof(Product))]
+    //[RequirePermission"Create", nameof(Product))]
+    [RequireClaim("write", nameof(Product))]
     public async Task<ActionResult<Product>> PostProduct(Product product)
     {
         if (!ModelState.IsValid)
@@ -86,7 +90,8 @@ public class ProductsController(ApplicationDbContext context) : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [RequirePermission("Delete", nameof(Product))]
+    //[RequirePermission"Delete", nameof(Product))]
+    [RequireClaim("write", nameof(Product))]
     public async Task<IActionResult> DeleteProduct(int id)
     {
         var product = await context.Products.FindAsync(id);

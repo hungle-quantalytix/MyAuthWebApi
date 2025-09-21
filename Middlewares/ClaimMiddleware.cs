@@ -5,13 +5,13 @@ using MyAuthWebApi.Data;
 
 namespace MyAuthWebApi.Middlewares;
 
-public class PermissionMiddleware
+public class ClaimMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogger<PermissionMiddleware> _logger;
+    private readonly ILogger<ClaimMiddleware> _logger;
 
-    public PermissionMiddleware(RequestDelegate next, IHttpContextAccessor httpContextAccessor, ILogger<PermissionMiddleware> logger)
+    public ClaimMiddleware(RequestDelegate next, IHttpContextAccessor httpContextAccessor, ILogger<ClaimMiddleware> logger)
     {
         _next = next;
         _httpContextAccessor = httpContextAccessor;
@@ -26,9 +26,9 @@ public class PermissionMiddleware
             await _next(context);
             return;
         }
- 
-        var permissionAttribute = endpoint.Metadata.GetMetadata<RequirePermissionAttribute>();
-        if (permissionAttribute != null)
+
+        var claimAttribute = endpoint.Metadata.GetMetadata<RequireClaimAttribute>();
+        if (claimAttribute != null)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
@@ -38,15 +38,13 @@ public class PermissionMiddleware
                 await context.Response.WriteAsync("Unauthorized");
                 return;
             }
-            
-            //TODO for now just support User subject type
-            var permission = await dbContext.Permissions
-                                        .FirstOrDefaultAsync(p => (p.Action == permissionAttribute.Action || p.Action == "*")
-                                        && (p.ResourceType == permissionAttribute.ResourceType || p.ResourceType == "*")
-                                        && (p.ResourceId == permissionAttribute.ResourceId || p.ResourceId == "*")
-                                        && (p.SubjectType == "User" || p.SubjectType == "*")
-                                        && (p.SubjectId == userId || p.SubjectId == "*"));
-            if (permission == null)
+
+            var matchedClaim = await dbContext
+            .Users.Where(x => x.Id == userId)
+            .SelectMany(x => x.Claims)
+            .Where(x => (x.Action == claimAttribute.Action || x.Action == "*")
+                    && (x.ResourceType == claimAttribute.ResourceType || x.ResourceType == "*")).FirstOrDefaultAsync();
+            if (matchedClaim == null)
             {
                 context.Response.StatusCode = 403;
                 context.Response.ContentType = "application/json";
@@ -54,7 +52,7 @@ public class PermissionMiddleware
                 return;
             }
         }
-    
+
         await _next(context);
     }
 }

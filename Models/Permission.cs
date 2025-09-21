@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace MyAuthWebApi.Models;
 
 public class Permission
@@ -17,4 +19,6 @@ public class Claim
     public string ResourceId { get; set; } = string.Empty;
     public string Action { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
+    
+    public virtual ICollection<QtxUser> Users { get; set; } = new List<QtxUser>();
 }

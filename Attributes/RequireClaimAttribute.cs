@@ -1,9 +1,8 @@
 namespace MyAuthWebApi.Attributes;
 
 [AttributeUsage(AttributeTargets.Method)]
-public class RequirePermissionAttribute(string action, string resourceType, string resourceId = "*") : Attribute
+public class RequireClaimAttribute(string action, string resourceType) : Attribute
 {
     public string Action { get; set; } = action;
     public string ResourceType { get; set; } = resourceType;
-    public string ResourceId { get; set; } = resourceId;
 }
