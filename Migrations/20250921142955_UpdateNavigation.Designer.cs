@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyAuthWebApi.Data;
 
@@ -10,9 +11,11 @@ using MyAuthWebApi.Data;
 namespace MyAuthWebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250921142955_UpdateNavigation")]
+    partial class UpdateNavigation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -222,7 +225,7 @@ namespace MyAuthWebApi.Migrations
                     b.Property<string>("AdditionalRules")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("ClaimId")
+                    b.Property<int?>("ClaimsId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Display")
@@ -244,7 +247,7 @@ namespace MyAuthWebApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("ParentId")
+                    b.Property<int>("ParentId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Type")
@@ -253,7 +256,7 @@ namespace MyAuthWebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClaimId");
+                    b.HasIndex("ClaimsId");
 
                     b.HasIndex("ParentId");
 
@@ -460,15 +463,17 @@ namespace MyAuthWebApi.Migrations
 
             modelBuilder.Entity("MyAuthWebApi.Models.Navigation", b =>
                 {
-                    b.HasOne("MyAuthWebApi.Models.Claim", "Claim")
+                    b.HasOne("MyAuthWebApi.Models.Claim", "Claims")
                         .WithMany()
-                        .HasForeignKey("ClaimId");
+                        .HasForeignKey("ClaimsId");
 
                     b.HasOne("MyAuthWebApi.Models.Navigation", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Claim");
+                    b.Navigation("Claims");
 
                     b.Navigation("Parent");
                 });

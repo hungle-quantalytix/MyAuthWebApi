@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyAuthWebApi.Data;
 
@@ -10,9 +11,11 @@ using MyAuthWebApi.Data;
 namespace MyAuthWebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250921144847_MarkNavigationParentOptionalV2")]
+    partial class MarkNavigationParentOptionalV2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -222,7 +225,7 @@ namespace MyAuthWebApi.Migrations
                     b.Property<string>("AdditionalRules")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("ClaimId")
+                    b.Property<int?>("ClaimsId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Display")
@@ -253,7 +256,7 @@ namespace MyAuthWebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClaimId");
+                    b.HasIndex("ClaimsId");
 
                     b.HasIndex("ParentId");
 
@@ -460,15 +463,15 @@ namespace MyAuthWebApi.Migrations
 
             modelBuilder.Entity("MyAuthWebApi.Models.Navigation", b =>
                 {
-                    b.HasOne("MyAuthWebApi.Models.Claim", "Claim")
+                    b.HasOne("MyAuthWebApi.Models.Claim", "Claims")
                         .WithMany()
-                        .HasForeignKey("ClaimId");
+                        .HasForeignKey("ClaimsId");
 
                     b.HasOne("MyAuthWebApi.Models.Navigation", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
 
-                    b.Navigation("Claim");
+                    b.Navigation("Claims");
 
                     b.Navigation("Parent");
                 });

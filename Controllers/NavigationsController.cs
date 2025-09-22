@@ -5,6 +5,8 @@ using MyAuthWebApi.Models;
 
 namespace MyAuthWebApi.Controllers;
 
+[Route("api/[controller]")]
+[ApiController]
 public class NavigationsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
