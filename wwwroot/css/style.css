@@ -1,0 +1,47 @@
+/* Custom styles for MyAuth Web API - keeping only essential overrides */
+
+/* Body background gradient */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+/* Top navigation tweaks */
+.navbar .nav-link.active {
+    font-weight: 600;
+}
+
+.navbar .nav-link i {
+    font-size: 1rem;
+}
+
+/* Main content spacing */
+main.container-fluid {
+    transition: padding 0.3s ease;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Ensure cards pop on gradient background */
+.card {
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
+}
+
+/* Loading states */
+.htmx-request {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.htmx-request .btn {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    main.container-fluid {
+        padding-inline: 1rem !important;
+    }
+}

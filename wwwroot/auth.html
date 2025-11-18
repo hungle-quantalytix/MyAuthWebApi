@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - MyAuth Web API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@2.0.3"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <!-- Top navigation will be loaded here -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content Area -->
+    <main class="container-fluid py-4">
+        <div class="card shadow">
+            <div class="card-body">
+                <h1 class="card-title mb-4">Authentication</h1>
+
+            <section class="user-profile mb-4">
+                <div class="card" id="user-card" data-state="signed-out">
+                    <div class="card-header bg-light">
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" id="user-avatar" style="width: 50px; height: 50px; font-size: 1.5rem; font-weight: bold;">?</div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0" id="user-name">Guest user</h6>
+                                <small class="text-muted" id="user-email">Login to load your profile data.</small>
+                            </div>
+                            <span class="badge bg-secondary" id="user-status">Signed out</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-4 text-center">
+                                <small class="text-muted d-block">Roles</small>
+                                <strong id="user-roles">--</strong>
+                            </div>
+                            <div class="col-4 text-center">
+                                <small class="text-muted d-block">Issued</small>
+                                <strong id="user-issued">--</strong>
+                            </div>
+                            <div class="col-4 text-center">
+                                <small class="text-muted d-block">Expires</small>
+                                <strong id="user-expiration">--</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <pre class="bg-light p-2 rounded small text-muted mb-3" id="user-claims-json" style="font-size: 0.75rem;">No token loaded.</pre>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="copy-access-token">Copy access token</button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" id="logout-button">Sign out</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <div class="row">
+                <!-- Register Form -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Register</h5>
+                            <form hx-post="/register"
+                                  hx-target="#register-result"
+                                  hx-swap="innerHTML"
+                                  hx-ext="json-enc"
+                                  hx-on::after-request="handleRegisterResponse(event)">
+                                <div class="mb-3">
+                                    <label for="register-email" class="form-label">Email:</label>
+                                    <input type="email" id="register-email" name="email" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="register-password" class="form-label">Password:</label>
+                                    <input type="password" id="register-password" name="password" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Register</button>
+                            </form>
+                            <div id="register-result" class="result mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login Form -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Login</h5>
+                            <form hx-post="/login"
+                                  hx-target="#login-result"
+                                  hx-swap="innerHTML"
+                                  hx-ext="json-enc"
+                                  hx-on::after-request="handleLoginResponse(event)">
+                                <div class="mb-3">
+                                    <label for="login-email" class="form-label">Email:</label>
+                                    <input type="email" id="login-email" name="email" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="login-password" class="form-label">Password:</label>
+                                    <input type="password" id="login-password" name="password" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100">Login</button>
+                            </form>
+                            <div id="login-result" class="result mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Refresh Token Form -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Refresh Token</h5>
+                            <form hx-post="/refresh"
+                                  hx-target="#refresh-result"
+                                  hx-swap="innerHTML"
+                                  hx-ext="json-enc"
+                                  hx-on::after-request="handleRefreshResponse(event)">
+                                <div class="mb-3">
+                                    <label for="refresh-token" class="form-label">Refresh Token:</label>
+                                    <input type="text" id="refresh-token" name="refreshToken" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-warning w-100">Refresh</button>
+                            </form>
+                            <div id="refresh-result" class="result mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Token Display -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Current Tokens</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <strong>Access Token:</strong>
+                        <code class="small text-muted" id="access-token-display">Not set</code>
+                    </div>
+                    <div>
+                        <strong>Refresh Token:</strong>
+                        <code class="small text-muted" id="refresh-token-display">Not set</code>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </main>
+    <script src="/js/app.js"></script>
+    <script src="/js/auth.js"></script>
+</body>
+</html>
+
